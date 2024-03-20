@@ -31,7 +31,7 @@ export function Model(props) {
     >
       <mesh geometry={nodes.supports.geometry} material={materials['Material.004']} />
       <mesh geometry={nodes.chassis.geometry} material={materials['Material.005']} />
-      <mesh geometry={nodes.helix.geometry} material={materials['Material.005']} ref={helixRef} />
+      <mesh position={[0,.5,0]} geometry={nodes.helix.geometry} material={materials['Material.005']} ref={helixRef} />
     </group>
   );
 }
