@@ -1,7 +1,17 @@
 import React, { useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { useTrimesh } from '@react-three/cannon';
-import { useFrame } from '@react-three/fiber'; // Import useFrame hook
+import { useFrame } from '@react-three/fiber'; 
+
+
+
+
+
+
+
+
+
+
 
 export function Model(props) {
   const { nodes, materials } = useGLTF('/airplane.glb');
@@ -22,12 +32,14 @@ export function Model(props) {
       helixRef.current.rotation.z -= 1.0; 
   });
 
+
+
   return (
     <group
       ref={ref}
       {...props}
       dispose={null}
-      onPointerDown={() => api.velocity.set(0, 5, 0)}
+      onPointerDown={() => api.velocity.set(0, 0, 5)}
     >
       <mesh geometry={nodes.supports.geometry} material={materials['Material.004']} />
       <mesh geometry={nodes.chassis.geometry} material={materials['Material.005']} />

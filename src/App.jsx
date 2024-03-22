@@ -16,6 +16,7 @@ import {
 } from '@react-three/cannon'
 import { useMemo, useRef } from 'react'
 import { Model } from './Model'
+import Character from './Character'
 
 
 
@@ -125,7 +126,7 @@ function Monkey(props) {
 function App() {
   
   return (
-    <Canvas shadows camera={{ position: [0, 2, 14] }}>
+    <Canvas shadows>
       <ambientLight intensity={2}/>
       <spotLight
         position={[2.5, 5, 5]}
@@ -145,6 +146,7 @@ function App() {
         <Debug color={"red"}  >
           <Plane rotation={[-Math.PI / 2, 0, 0]} />
           <Model   position={[-2, 20, 0]}   />
+          <Character/>
           </Debug>
       </Physics>
       <OrbitControls target-y={0.5} />
