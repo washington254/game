@@ -14,9 +14,10 @@ import {
   useCylinder,
   useConvexPolyhedron,
 } from '@react-three/cannon'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, Suspense } from 'react'
 import { Model } from './Model'
 import Character from './Character'
+
 
 
 
@@ -30,103 +31,38 @@ function Plane(props) {
   )
 }
 
-function Box(props) {
-  const [ref, api] = useBox(
-    () => ({ args: [1, 1, 1], mass: 1, ...props }),
-    useRef()
-  )
 
+function Wall({ args, ...props }) {
+  const [ref] = useBox(() => ({
+    type: "Static",
+    args,
+    mass: 0,
+    material: {
+      friction: 0.3,
+      name: "wall",
+    },
+    collisionFilterGroup: 2,
+    ...props,
+  }));
   return (
-    <mesh ref={ref} castShadow onPointerDown={() => api.velocity.set(0, 5, 0)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshNormalMaterial />
+    <mesh receiveShadow ref={ref} {...props}>
+      <boxGeometry args={args} />
+      <meshPhongMaterial color="white" opacity={0.8} transparent />
     </mesh>
-  )
+  );
 }
 
-function Sphere(props) {
-  const [ref, api] = useSphere(
-    () => ({ args: [0.75], mass: 1, ...props }),
-    useRef()
-  )
-
-  return (
-    <mesh ref={ref} castShadow onPointerDown={() => api.velocity.set(0, 5, 0)}>
-      <sphereGeometry args={[0.75]} />
-      <meshNormalMaterial />
-    </mesh>
-  )
-}
-
-function Cylinder(props) {
-  const [ref, api] = useCylinder(
-    () => ({ args: [1, 1, 2, 8], mass: 1, ...props }),
-    useRef()
-  )
-
-  return (
-    <mesh ref={ref} castShadow onPointerDown={() => api.velocity.set(0, 5, 0)}>
-      <cylinderGeometry args={[1, 1, 2, 8]} />
-      <meshNormalMaterial />
-    </mesh>
-  )
-}
-
-
-
-function TorusKnot(props) {
-  const geometry = useMemo(() => new TorusKnotGeometry(), [])
-  const [ref, api] = useTrimesh(
-    () => ({
-      args: [geometry.attributes.position.array, geometry.index.array],
-      mass: 1,
-      ...props,
-    }),
-    useRef()
-  )
-
-  return (
-    <mesh ref={ref} castShadow onPointerDown={() => api.velocity.set(0, 5, 0)}>
-      <torusKnotGeometry />
-      <meshNormalMaterial />
-    </mesh>
-  )
-}
-
-function Monkey(props) {
-  const { nodes } = useGLTF('/hamburger.glb')
-  console.log(nodes);
-  const [ref, api] = useTrimesh(
-    () => ({
-      args: [
-        nodes.Suzanne.geometry.attributes.position.array,
-        nodes.Suzanne.geometry.index.array,
-      ],
-      mass: 1,
-      ...props,
-    }),
-    useRef()
-  )
-  return (
-    <group
-      ref={ref}
-      {...props}
-      dispose={null}
-      onPointerDown={() => api.velocity.set(0, 5, 0)}
-    >
-      <mesh
-        castShadow
-        geometry={nodes.Suzanne.geometry}
-        material={useMemo(() => new MeshNormalMaterial(), [])}
-      />
-    </group>
-  )
-}
 
 function App() {
   
   return (
-    <Canvas shadows>
+    <Canvas shadows    
+    camera={ {
+      fov: 45,
+      near: 0.1,
+      far: 200,
+      position: [ 4, 2, 6 ],
+  } }>
       <ambientLight intensity={2}/>
       <spotLight
         position={[2.5, 5, 5]}
@@ -145,11 +81,20 @@ function App() {
       <Physics >
         <Debug color={"red"}  >
           <Plane rotation={[-Math.PI / 2, 0, 0]} />
-          <Model   position={[-2, 20, 0]}   />
-          <Character/>
+             
+           <Suspense fallback={"loading.."}>
+               <Model position={[-2, 20, 0]}   />
+            </Suspense>
+           
+           <Suspense fallback={"loading.."}>
+              <Character/>
+            </Suspense>
+          
+            
+    
           </Debug>
       </Physics>
-      <OrbitControls target-y={0.5} />
+      <OrbitControls makeDefault/>
       <Stats />
     </Canvas>
   )
