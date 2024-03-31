@@ -17,6 +17,8 @@ import {
 import { useMemo, useRef, Suspense } from 'react'
 import { Model } from './Model'
 import Character from './Character'
+import { Car } from './cars/Car'
+import AirPlane from './Plane/Plane'
 
 
 
@@ -56,12 +58,12 @@ function Wall({ args, ...props }) {
 function App() {
   
   return (
-    <Canvas shadows    
+    <Canvas shadows  frameloop="demand"   
     camera={ {
       fov: 45,
       near: 0.1,
       far: 200,
-      position: [ 4, 2, 6 ],
+      position: [ 4, 2, 16 ],
   } }>
       <ambientLight intensity={2}/>
       <spotLight
@@ -83,11 +85,15 @@ function App() {
           <Plane rotation={[-Math.PI / 2, 0, 0]} />
              
            <Suspense fallback={"loading.."}>
-               <Model position={[-2, 20, 0]}   />
+               {/* <Model position={[-2, 2, 0]}   /> */}
             </Suspense>
+            <Suspense fallback={"loading.."}>
+              <AirPlane/>
+            </Suspense>
+            {/* <Car/> */}
            
            <Suspense fallback={"loading.."}>
-              <Character/>
+              {/* <Character/> */}
             </Suspense>
           
             

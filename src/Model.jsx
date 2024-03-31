@@ -14,11 +14,12 @@ import { useFrame } from '@react-three/fiber';
 
 
 export function Model(props) {
-  const { nodes, materials } = useGLTF('/airplane.glb');
+  const { nodes, materials } = useGLTF('/plane.glb')
+
   const [ref, api] = useTrimesh(() => ({
     args: [
-      nodes.supports.geometry.attributes.position.array,
-      nodes.supports.geometry.index.array,
+      nodes['0_0'].geometry.attributes.position.array,
+      nodes['0_0'].geometry.index.array,
     ],
     mass: 1,
     ...props,
@@ -29,23 +30,28 @@ export function Model(props) {
 
   
   useFrame(() => {
-      helixRef.current.rotation.z -= 1.0; 
+      helixRef.current.rotation.y -= 1.0; 
   });
 
 
-
   return (
-    <group
-      ref={ref}
-      {...props}
-      dispose={null}
-      onPointerDown={() => api.velocity.set(0, 0, 5)}
-    >
-      <mesh geometry={nodes.supports.geometry} material={materials['Material.004']} />
-      <mesh geometry={nodes.chassis.geometry} material={materials['Material.005']} />
-      <mesh position={[0,.5,0]} geometry={nodes.helix.geometry} material={materials['Material.005']} ref={helixRef} />
+    <group {...props} dispose={null}>
+      <group rotation={[-1.812, 0, 0]}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes['0_0'].geometry}
+          material={materials['ki100_co.paa__ki100.rvmat']}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes['0_1'].geometry}
+          material={materials['glass.paa__glass.rvmat']}
+        />
+      </group>
     </group>
-  );
+  )
 }
 
-useGLTF.preload('/airplane.glb');
+useGLTF.preload('/plane.glb')
